@@ -1,0 +1,20 @@
+{
+    "name": "jean-pasqualini/phpunit-learner",
+    "require": {
+        "phpunit/phpunit": "^4.8",
+        "symfony/console": "3.0.*"
+    },
+    "autoload" :
+    {
+        "psr-4" :
+        {
+            "" : []
+        }
+    },
+    "authors": [
+        {
+            "name": "jean pasqualini",
+            "email": "jpasqualini75@gmail.com"
+        }
+    ]
+}
