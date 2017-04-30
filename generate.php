@@ -97,6 +97,15 @@ namespace App {
                         $export['export'] = true;
                     }
 
+                    if(is_string($value)) {
+                        $export['location'] = $location;
+                        $export['assert'] = [
+                            'type' => 'string',
+                            'expect' => $value
+                        ];
+                        $export['export'] = true;
+                    }
+
                     break;
 
                 default:

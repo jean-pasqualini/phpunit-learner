@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 require_once __DIR__.'/vendor/autoload.php';
 
 $output = new ConsoleOutput();
-$output->getFormatter()->setStyle('white', new OutputFormatterStyle('black', 'white', array('bold', 'blink')));
+$output->getFormatter()->setStyle('white', new OutputFormatterStyle('black', 'white', array('bold')));
 
 $symfonyStyle = new SymfonyStyle(new ArrayInput([]), $output);
 
@@ -138,6 +138,26 @@ class Runner {
                                 'non' => 'non'
                             ]);
                         break;
+
+                    case 'string':
+                        $symfonyStyle->writeln(sprintf('<options=bold>%s</>', $exportItem['description']));
+                        $symfonyStyle->writeln(sprintf('<question>%s</question>', $exportItem['location']));
+                        $symfonyStyle->writeln(sprintf('<comment>%s</comment>', $exportItem['code']));
+
+                        $question = $exportItem['assert']['expect'];
+
+                        $isSnakeCase = (preg_match('/[^A-Z ]+/', $question) && preg_match('/[_]+/', $question));
+                        $isCamelCase = (preg_match('/[^_ ]+/', $question));
+
+                        if ($isSnakeCase) {
+                            $question = $this->formatSnakeCase($question);
+                        } elseif ($isCamelCase) {
+                            $question = $this->formatCamelCase($question);
+                        } else {
+                            $question = $question[0] . str_repeat('.', strlen($question) - 2) . $question[strlen($question) - 1];
+                        }
+
+                        $userReponse = $symfonyStyle->ask(sprintf('<white>%s ?</white>', $question));
                 }
             }
         }
