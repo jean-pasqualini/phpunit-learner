@@ -8,8 +8,13 @@
     {
         "psr-4" :
         {
-            "" : []
-        }
+            "" : [],
+            "QuestionFactory\\" : "QuestionFactory\\",
+            "App\\" : ""
+        },
+        "classmap": [
+            "FakeConstraint/"
+        ]
     },
     "authors": [
         {
