@@ -2,6 +2,7 @@
 namespace App {
 
     use Composer\Autoload\ClassLoader;
+    use QuestionFactory\QuestionFactoryRegistry;
     use Symfony\Component\Console\Input\ArgvInput;
     use Symfony\Component\Console\Input\InputArgument;
     use Symfony\Component\Console\Input\InputDefinition;
@@ -28,27 +29,75 @@ namespace App {
 
     if (!file_exists($projectAutoload)) {
         $symfonyStyle->error(sprintf('the project autoload %s do not exists', $projectAutoload));
+        exit();
     }
 
-    define('OUT_FILE_PATH', $outFilePath);
+    $symfonyStyle->title('PHPUNIT LEARNER');
 
-    [
-        \PHPUnit_Framework_Constraint_IsEqual::class
-    ];
+    class Export {
+
+        private $export = array();
+
+        private static $instance;
+
+        public static function getInstance()
+        {
+            if (null === self::$instance) {
+                self::$instance = new self();
+            }
+
+            return self::$instance;
+        }
+
+        private function exportGlobalInformations($description)
+        {
+            $start = 4;
+
+            $stack = debug_backtrace(false);
+            $location = sprintf(
+                '%s:%s:%s',
+                $stack[$start + 1]['class'],
+                $stack[$start + 1]['function'],
+                $stack[$start]['function']
+            );
+            $lines = file($stack[$start]['file']);
+            $export['description'] = substr($description, 0, 200);
+            $export['code'] = trim(implode(PHP_EOL, array_slice($lines, $stack[$start]['line'] - 1, 1)));
+            $export['location'] = $location;
+
+            return $export;
+        }
+
+        public function add($value, $description = '')
+        {
+            $questionFactoryClass = (new QuestionFactoryRegistry())->getQuestionFactoryClassByValue($value);
+
+            if (null !== $questionFactoryClass) {
+                $export = $this->exportGlobalInformations($description);
+                $export['assert'] = [
+                    'type' => $questionFactoryClass,
+                    'expect' => $value
+                ];
+
+                $this->export[] = $export;
+            }
+        }
+
+        public function dump($filename)
+        {
+            return file_put_contents($filename, json_encode($this->export, JSON_PRETTY_PRINT));
+        }
+    }
+
+    $appLoader->loadClass(\PHPUnit_Framework_Constraint_IsEqual::class);
 
     $appLoader->unregister();
+    require_once $projectAutoload;
+    $appLoader->register();
 
-    /** @var ClassLoader $projectLoader */
-    $projectLoader = require_once $projectAutoload;
-
-    abstract class PHPUnit_Framework_FakeConstraint extends \PHPUnit_Framework_Constraint
-    {
-        public static $export = [];
-    }
-}
-
-namespace App {
     \PHPUnit_TextUI_Command::main(false);
-    file_put_contents(OUT_FILE_PATH, json_encode(PHPUnit_Framework_FakeConstraint::$export, JSON_PRETTY_PRINT));
-    echo PHP_EOL.' QUESTIONNAIRE GENERER !!! '.PHP_EOL;
+    if (false !== Export::getInstance()->dump($outFilePath)) {
+        $symfonyStyle = new SymfonyStyle($input, new ConsoleOutput());
+        $symfonyStyle->success('survey generated in ' . $outFilePath);
+    }
 }

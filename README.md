@@ -2,7 +2,7 @@
 learner generate questions from unit tests in project to rise in skill
 
 ```bash
-$ php generate.php ./questions.json --configuration=[path-to-phpunitxml]
-$ php question.php --list
-$ php question.php
+$ ./phpunit-learner ./questions.json --configuration=[path-to-phpunitxml]
+$ ./phpunit-learner --run --list
+$ ./phpunit-learner --run question.php
 ```

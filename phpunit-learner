@@ -1,0 +1,9 @@
+#!/usr/bin/php
+<?php
+define('PHPUNIT_LEARNER', 1);
+
+if (in_array('--run', $_SERVER['argv'])) {
+    require_once(__DIR__ . '/question.php');
+} else {
+    require_once(__DIR__ . '/generate.php');
+}

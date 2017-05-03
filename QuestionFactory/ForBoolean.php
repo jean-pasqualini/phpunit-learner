@@ -22,8 +22,8 @@ class ForBoolean
         ];
     }
 
-    public function isSupport($type)
+    public function isSupport($value)
     {
-        return 'bool' === $type;
+        return is_bool($value);
     }
 }

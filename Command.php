@@ -13,6 +13,7 @@ class Command {
     public function configure(InputDefinition $inputDefinition)
     {
         $inputDefinition->addOption(new InputOption('list'));
+        $inputDefinition->addOption(new InputOption('run'));
         $inputDefinition->addOption(new InputOption('filter', null, InputOption::VALUE_REQUIRED));
     }
 

@@ -1,8 +1,10 @@
 {
     "name": "jean-pasqualini/phpunit-learner",
     "require": {
-        "phpunit/phpunit": "^4.8",
         "symfony/console": "3.0.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
     },
     "autoload" :
     {

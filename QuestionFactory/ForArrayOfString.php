@@ -15,8 +15,15 @@ class ForArrayOfString extends AbstractQuestionFactory
         }
     }
 
-    public function isSupport($type)
+    public function isSupport($value)
     {
-        return 'string' === $type;
+        if (
+            !is_array($value)
+            || in_array(false, array_map('is_string', $value))
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -2,28 +2,16 @@
 namespace App;
 
 use QuestionFactory\ForString;
+use QuestionFactory\QuestionFactoryRegistry;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Runner {
 
-    private $questionFactoryCollection = [];
+    private $questionFactoryRegistry;
 
     public function __construct()
     {
-        $this->questionFactoryCollection = [
-            new ForString()
-        ];
-    }
-
-    private function getQuestionFactory(string $type)
-    {
-        foreach ($this->questionFactoryCollection as $questionFactory) {
-            if ($questionFactory->isSupport($type)) {
-                return $questionFactory;
-            }
-        }
-
-        return null;
+        $this->questionFactoryRegistry = new QuestionFactoryRegistry();
     }
 
     public function start($export, SymfonyStyle $symfonyStyle)
@@ -31,7 +19,7 @@ class Runner {
         foreach($export as $exportItem) {
             if(isset($exportItem['assert']))
             {
-                $questionFactory = $this->getQuestionFactory($exportItem['assert']['type']);
+                $questionFactory = $this->questionFactoryRegistry->getQuestionFactoryByClass($exportItem['assert']['type']);
                 if (null !== $questionFactory) {
                     $errorCount = 0;
 

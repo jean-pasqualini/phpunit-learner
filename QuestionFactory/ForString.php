@@ -19,8 +19,8 @@ class ForString extends AbstractQuestionFactory
         ];
     }
 
-    public function isSupport($type)
+    public function isSupport($value)
     {
-        return 'string' === $type;
+        return is_string($value);
     }
 }
